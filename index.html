@@ -1,30 +1,273 @@
-<form action="https://formsubmit.co/kinovemlyne@seznam.cz" method="POST">
-  <h2>Nemáš Kino ID? Vytvoř si ho zdarma!</h2>
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google-site-verification" content="oRwdVFgd0x_dI-rTIbsnG1TN0KkX5m2UyOzJxkYy-aA" />
+  <title>Kino ve mlýně</title>
 
-  <label>Jméno:<br>
-    <input type="text" name="jméno" required>
-  </label><br><br>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
 
-  <label>Příjmení:<br>
-    <input type="text" name="příjmení" required>
-  </label><br><br>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('https://static.vecteezy.com/system/resources/previews/028/541/542/non_2x/popcorn-stand-cinema-shot-movie-theatre-popcorn-free-photo.jpg') no-repeat center center fixed;
+      background-size: cover;
+      text-align: center;
+      padding-top: 140px;
+      position: relative;
+      min-height: 100vh;
+      transition: background 0.3s;
+    }
 
-  <label>Den narození:<br>
-    <input type="number" name="den" min="1" max="31" required>
-  </label><br><br>
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #40916C;
+      padding: 15px 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      font-weight: 600;
+      color: white;
+    }
 
-  <label>Rok narození:<br>
-    <input type="number" name="rok" min="1900" max="2025" required>
-  </label><br><br>
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: 30px;
+    }
 
-  <label>Email:<br>
-    <input type="email" name="email" required>
-  </label><br><br>
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+    }
 
-  <input type="hidden" name="_captcha" value="false">
-  <input type="hidden" name="_subject" value="Nová žádost o Kino ID">
-  <input type="hidden" name="_template" value="table">
-  <input type="hidden" name="_next" value="https://tvujweb.cz/dekuji.html">
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
 
-  <button type="submit">Vytvořit Kino ID</button>
-</form>
+    #nav-id {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    @media (max-width: 600px) {
+      nav ul {
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 0 10px;
+      }
+
+      nav ul li a {
+        font-size: 14px;
+      }
+      #nav-id {
+        position: static;
+        margin-left: 20px;
+      }
+    }
+
+    #content {
+      display: block;
+    }
+
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      margin-bottom: 40px;
+      text-align: left;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"] {
+      padding: 12px;
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 12px 24px;
+      margin-top: 20px;
+      background-color: #40916C;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #2D6A4F;
+    }
+
+    h1, h2, h3 {
+      margin-bottom: 10px;
+    }
+
+    p.small {
+      font-size: 14px;
+      color: #333;
+      margin-top: 10px;
+    }
+
+    #info {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      text-align: left;
+    }
+
+    #map {
+      width: 100%;
+      height: 250px;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+
+    #error-contact {
+      max-width: 400px;
+      margin: 20px auto;
+      font-size: 13px;
+      color: #555;
+      font-style: italic;
+    }
+
+    #rekonstrukce-info {
+      background: white;
+      padding: 20px;
+      max-width: 400px;
+      margin: 20px auto;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.15);
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #444;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+
+  <nav>
+    <ul>
+      <li><a href="#uvod">Domov</a></li>
+      <li><a href="#kino">Informace</a></li>
+      <li><a href="#rekonstrukce">Rekonstrukce</a></li>
+      <li><a href="#kinoid">Kino ID</a></li>
+    </ul>
+    <div id="nav-id">ID:</div>
+  </nav>
+
+  <div id="uvod" class="box">
+    <h1>Kino ve mlýně</h1>
+    <div id="rekonstrukce-info">
+      Rekonstrukce dokončena z 37%
+    </div>
+    <p class="small">Kino je uzavřeno protože je ve výstavbě.</p>
+    <p class="small">Napište nám na e-mail kinovemlyne@seznam.cz, jaký film byste si přáli vidět jako první po otevření.</p>
+    <p class="small">
+      Majitel a ředitel kina: Jakub Hitl<br />Tel.: +420 774 954 263
+    </p>
+  </div>
+
+  <div id="kino" class="info">
+    <div id="info">
+      <h3>Informace o kině</h3>
+      <p>
+        Kino ve mlýně je malé soukromé kino v srdci Vémyslic. V současné době
+        prochází kompletní rekonstrukcí, aby nabídlo moderní technologie i
+        pohodlné posezení. Po dokončení bude k dispozici útulný sál s kapacitou
+        15–22 diváků. Naším cílem je přinášet nejen nejnovější filmy, ale také
+        tematické večery pro milovníky kvalitní kinematografie.
+      </p>
+      <div id="map"></div>
+    </div>
+  </div>
+
+  <div id="rekonstrukce" class="info">
+    <div id="info">
+      <h3>Informace o rekonstrukci kina</h3>
+      <p>
+        Kino ve mlýně právě prochází rozsáhlou rekonstrukcí, která přinese moderní vybavení, vylepšenou akustiku a komfortní prostředí pro všechny návštěvníky. Pracujeme na pohodlných sedadlech a inovativním promítacím systému, aby sledování filmů bylo co nejpříjemnější.
+      </p>
+    </div>
+  </div>
+
+  <!-- Nová sekce pro Kino ID místo Jarvina -->
+  <div id="kinoid" class="info">
+    <div class="box" style="max-width: 450px; margin-top: 40px;">
+      <h2>Nemáš Kino ID? Vytvoř si ho zdarma!</h2>
+      <p>Výhody Kino ID:</p>
+      <ul>
+        <li>10% sleva na první vstup</li>
+        <li>Malý popcorn zdarma</li>
+        <li>Rychlejší registrace u pokladny</li>
+      </ul>
+
+      <form action="https://formsubmit.co/tvuj@email.cz" method="POST">
+        <!-- Skryté pole pro přesměrování po odeslání, změň na svou stránku poděkování -->
+        <input type="hidden" name="_next" value="https://tvujweb.cz/dekuji.html" />
+        <!-- Případně můžeš přidat i další skrytá pole (např. _subject, _captcha, ...) -->
+
+        <label for="jmeno">Jméno:</label><br />
+        <input type="text" id="jmeno" name="Jméno" placeholder="Tvoje jméno" required /><br />
+
+        <label for="prijmeni">Příjmení:</label><br />
+        <input type="text" id="prijmeni" name="Příjmení" placeholder="Tvoje příjmení" required /><br />
+
+        <label for="datum">Datum narození:</label><br />
+        <input type="date" id="datum" name="Datum narození" required /><br />
+
+        <label for="email">E-mail:</label><br />
+        <input type="email" id="email" name="E-mail" placeholder="tvuj@email.cz" required /><br />
+
+        <button type="submit">Vytvořit Kino ID</button>
+      </form>
+    </div>
+  </div>
+
+  <p id="error-contact">Pokud byste našli chybu na tomto webu, kontaktujte nás na emailu kinovemlyne@seznam.cz</p>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    window.onload = function () {
+      var map = L.map("map").setView([49.0239, 16.2558], 16);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+      L.marker([49.0239, 16.2558])
+        .addTo(map)
+        .bindPopup("Kino ve mlýně - Vémyslice 36")
+        .openPopup();
+    };
+  </script>
+</body>
+</html>
